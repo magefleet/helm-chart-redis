@@ -4,3 +4,13 @@ description: A Helm chart for Redis 7.2
 type: application
 version: 0.1.0
 appVersion: "7.2"
+keywords:
+  - redis
+  - cache
+  - database
+  - keyvalue
+home: https://redis.io
+sources:
+  - https://github.com/redis/redis
+maintainers:
+  - name: Admin
