@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "redis.fullname" . }}
+  labels:
+    {{- include "redis.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "redis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "redis.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: redis
+          containerPort: 6379
+          protocol: TCP
+        {{- if .Values.redis.password }}
+        env:
+        - name: REDIS_PASSWORD
+          value: {{ .Values.redis.password | quote }}
+        {{- end }}
+        args:
+        {{- if .Values.redis.password }}
+        - --requirepass
+        - $(REDIS_PASSWORD)
+        {{- end }}
+        - --maxmemory
+        - {{ .Values.redis.maxmemory | quote }}
+        - --maxmemory-policy
+        - {{ .Values.redis.maxmemoryPolicy | quote }}
+        livenessProbe:
+          tcpSocket:
+            port: redis
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: redis
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- if .Values.persistence.enabled }}
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        {{- end }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: {{ include "redis.fullname" . }}
+      {{- end }}
