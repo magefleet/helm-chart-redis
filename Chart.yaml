@@ -1,6 +1,6 @@
 apiVersion: v2
 name: redis
-description: A Helm chart for Redis 7.2
+description: A Helm chart for Redis 7.2 with persistence and configurable memory policies
 type: application
 version: 0.1.0
 appVersion: "7.2"
@@ -9,8 +9,23 @@ keywords:
   - cache
   - database
   - keyvalue
+  - in-memory
 home: https://redis.io
+icon: https://redis.io/wp-content/uploads/2024/04/Logotype.svg
 sources:
   - https://github.com/redis/redis
 maintainers:
-  - name: Admin
+  - name: MageFleet Team
+    email: info@magefleet.com
+annotations:
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/category: database
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial release with Redis 7.2
+  artifacthub.io/links: |
+    - name: Redis Documentation
+      url: https://redis.io/docs
+  artifacthub.io/maintainers: |
+    - name: MageFleet Team
+      email: info@magefleet.com

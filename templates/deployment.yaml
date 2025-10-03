@@ -25,7 +25,10 @@ spec:
         {{- if .Values.redis.password }}
         env:
         - name: REDIS_PASSWORD
-          value: {{ .Values.redis.password | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "redis.fullname" . }}
+              key: redis-password
         {{- end }}
         args:
         {{- if .Values.redis.password }}
